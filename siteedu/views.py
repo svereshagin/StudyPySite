@@ -24,4 +24,6 @@ def tasks(request):
         except subprocess.CalledProcessError as e:
             result = e.stderr
 
-    return render(request, 'tasks.html', )
+    # Передаем result в шаблон
+    return render(request, 'tasks.html', {'result': result})
+
