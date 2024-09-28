@@ -14,9 +14,13 @@ def tasks(request):
     result = None
     if request.method == 'POST':
         code = request.POST.get('code')
+        input_data = request.POST.get('input_data', '')  # Получаем данные для input()
+
+        # Заменяем input() на заданные данные
+        if 'input()' in code:
+            code = code.replace('input()', f'"{input_data}"')
+
         try:
-            # Внимание: выполнение пользовательского кода через subprocess небезопасно.
-            # Это только для примера.
             result = subprocess.run(
                 ['python3', '-c', code],
                 capture_output=True, text=True, check=True
@@ -24,6 +28,5 @@ def tasks(request):
         except subprocess.CalledProcessError as e:
             result = e.stderr
 
-    # Передаем result в шаблон
     return render(request, 'tasks.html', {'result': result})
 
